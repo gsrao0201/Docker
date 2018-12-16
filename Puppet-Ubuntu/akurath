@@ -1,0 +1,45 @@
+#!/bin/sh
+####################################################################
+# Created by: Sanyasi Rao Gandem
+# Purpose: Start/Stop/Restart akurath service
+####################################################################
+# Check the path of Tomcat and set environment variables as follows
+# in the .bashrc profile
+# chkconfig: 345 85 15
+# description: Akurath init script
+# HTML files and CGI. 
+#Use Case statement to start / stop /reset Akurath service
+
+###  start funcation
+
+start ()
+{
+
+node /opt/akurath/bin/akurath.js run /myworkspace 1>>/var/log/akurath-access-`date +%d-%b-%Y`.log 2>>/var/log/akurath-error-`date +%d-%b-%Y`.log &
+echo -e "###########\t\t akurath service started"
+}
+
+###  stop function
+stop () 
+{
+kill -9 `netstat -antp |grep "0.0.0.0:8000"|awk '{ print $NF}'|awk -F / '{print $1}'`
+echo -e "###########\t\t akurath service stoped"
+}
+
+case $1 in
+start)
+
+	start
+;;
+stop)
+	stop
+;;
+restart)
+	stop
+	start
+;;
+*) 
+echo "Akurath init script support start/stop/restart"
+;;
+esac
+exit 0

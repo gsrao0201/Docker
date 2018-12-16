@@ -1,0 +1,13 @@
+[Unit]
+Description=akurath
+After=network.target
+
+[Service]
+ExecStart=/etc/init.d/akurath start
+ExecStop=/etc/init.d/akurath stop
+Type=forking
+User=root
+Group=root
+
+[Install]
+WantedBy=default.target

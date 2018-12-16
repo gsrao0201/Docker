@@ -1,0 +1,55 @@
+## to build own puppet server with Akurath CloudCode space IDE   
+## with reference of codespace.io pupppet server 
+## 
+
+
+FROM ubuntu:latest
+
+
+#########################   Prerequired installation and configuration 
+RUN apt-get update
+
+RUN apt-get install -y openssh-server net-tools dnsutils vim sudo curl
+RUN mkdir /var/run/sshd
+RUN systemctl enable ssh
+RUN service ssh start
+
+RUN echo 'root:ubuntu' |chpasswd
+RUN useradd -m -G sys,sudo,systemd-journal -s /bin/bash devops
+RUN echo "devops:devops"|chpasswd
+
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+RUN mkdir /root/.ssh
+
+#########################   install and configure Akurath
+
+##   After updating the package database, Install the dependencies of NVM.
+RUN apt-get install build-essential libssl-dev git python  -yq
+
+##  Install Node JS
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
+RUN source ~/.profile && nvm install v0.10.40 && nvm use v0.10.40 && echo "nvm use v0.10.40" >> ~/.bashrc
+
+## Install Akurath from Source
+WORKDIR /opt
+RUN  git clone https://github.com/codespaces-io/akurath.git
+WORKDIR /opt/akurath
+run npm install grunt-exec grunt-contrib-compress grunt-contrib-compress grunt-contrib-compress 
+COPY akurath /etc/init.d/akurath
+COPY akurath.service /etc/systemd/system/akurath.service
+RUN systemctl daemon-reload 
+RUN systemctl enable akurath
+RUN ln -s /etc/systemd/system/akurath.service /etc/systemd/system/default.target.wants/akurath.service
+RUN systemctl start akurath
+
+#########################   cleaning part to reduce the bill size
+
+##  to clean up packages cache
+RUN apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 22 8000
+
+CMD ["/usr/sbin/sshd", "-D"]
