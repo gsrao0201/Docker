@@ -1,0 +1,104 @@
+version: '2'
+
+networks:
+  puppet:
+    driver: bridge
+
+services:
+  puppet:
+    build:
+      context: .
+      dockerfile: akurath-puppet_master.Dockerfile
+    image: ubuntu/puppet_akurath
+	cap-add:
+	  - SYS_ADMIN
+	security_opt:
+      - seccomp:unconfined
+    ports:
+      - "8000:8000"
+      - "80:80"
+#    environment:
+#      JAVA_ARGS: "-Xms256m -Xmx256m -XX:MaxPermSize=256m"
+	  
+	  
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+	  - /control:/workspace
+    networks:
+      - puppet
+    container_name: puppet
+    domainname: gsrao.lab
+    hostname: puppet
+    restart: always
+
+  node1:
+    build:
+      context: .
+      dockerfile: puppet_node.Dockerfile
+    image: centos/puppet-agent
+	cap-add:
+	  - SYS_ADMIN
+	security_opt:
+      - seccomp:unconfined
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+       - "8001:80"
+    networks:
+      - puppet
+    container_name: node1
+    domainname: gsrao.lab
+    hostname: node1
+    restart: always
+
+  node2:
+    image: centos/puppet-agent
+	cap-add:
+	  - SYS_ADMIN
+	security_opt:
+      - seccomp:unconfined
+	volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+       - "8002:80"
+    networks:
+      - puppet
+    container_name: node2
+    domainname: gsrao.lab
+    hostname: node2
+    restart: always
+
+  node3:
+    image: centos/puppet-agent
+	cap-add:
+	  - SYS_ADMIN
+	security_opt:
+      - seccomp:unconfined
+	volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+      - "8003:80"
+    networks:
+      - puppet
+    container_name: node3
+    domainname: gsrao.lab
+    hostname: node3
+    restart: always
+
+  node4:
+    image: centos/puppet-agent
+	cap-add:
+	  - SYS_ADMIN
+	security_opt:
+      - seccomp:unconfined
+	volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+      - "8004:80"
+      - "3306:3306"
+    networks:
+      - puppet
+    container_name: node4
+    domainname: gsrao.lab
+    hostname: node4
+    restart: always
