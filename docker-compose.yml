@@ -10,9 +10,9 @@ services:
       context: .
       dockerfile: akurath-puppet_master.Dockerfile
     image: ubuntu/puppet_akurath
-	cap-add:
-	  - SYS_ADMIN
-	security_opt:
+    cap-add:
+      - SYS_ADMIN
+    security_opt:
       - seccomp:unconfined
     ports:
       - "8000:8000"
@@ -36,9 +36,9 @@ services:
       context: .
       dockerfile: puppet_node.Dockerfile
     image: centos/puppet-agent
-	cap-add:
-	  - SYS_ADMIN
-	security_opt:
+    cap-add:
+      - SYS_ADMIN
+    security_opt:
       - seccomp:unconfined
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -53,11 +53,11 @@ services:
 
   node2:
     image: centos/puppet-agent
-	cap-add:
-	  - SYS_ADMIN
-	security_opt:
-      - seccomp:unconfined
-	volumes:
+    cap-add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfinedd
+    volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
        - "8002:80"
@@ -70,11 +70,11 @@ services:
 
   node3:
     image: centos/puppet-agent
-	cap-add:
-	  - SYS_ADMIN
-	security_opt:
+    cap-add:
+      - SYS_ADMIN
+    security_opt:
       - seccomp:unconfined
-	volumes:
+    volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
       - "8003:80"
@@ -87,11 +87,11 @@ services:
 
   node4:
     image: centos/puppet-agent
-	cap-add:
-	  - SYS_ADMIN
-	security_opt:
+    cap-add:
+      - SYS_ADMIN
+    security_opt:
       - seccomp:unconfined
-	volumes:
+    volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
       - "8004:80"
