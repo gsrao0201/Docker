@@ -16,8 +16,8 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # update the repository sources list
 # and install dependencies
-RUN yum update \
-    && yum install -y curl man git openssh-server openssh-client openssh net-tools dnsutils vim sudo curl bind-utils  gcc gcc-c++ make python man
+RUN yum update -y\
+    && yum install -y curl man git openssh-server openssh-clients openssh net-tools vim sudo curl bind-utils  gcc gcc-c++ make man
 
 
 RUN ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/default.target.wants/sshd.service 
